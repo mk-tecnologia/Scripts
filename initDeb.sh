@@ -31,8 +31,8 @@ $esperar
 
 # INSTALAÇÃO DE PACOTES
 echo -ne "${purple}INSTALANDO PACOTES...${nc}"
-apt-get update > /dev/null
-apt-get install -y vim neofetch qemu-guest-agent > /dev/null
+apt-get update > /dev/null 2>&1
+apt-get install -y vim neofetch qemu-guest-agent > /dev/null 2>&1
 echo -e "${green}OK${nc}"
 $esperar
 
