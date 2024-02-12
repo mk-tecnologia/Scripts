@@ -88,11 +88,19 @@ $esperar
 
 # INSTALAÇÃO DE PACOTES
 func_install_pkg() {
-   local message="INSTALANDO PACOTES"
+  local message="INSTALANDO PACOTES"
   apt-get update > /dev/null 2>&1
   apt-get install -y vim neofetch qemu-guest-agent > /dev/null 2>&1
   func_message
   $esperar
+}
+
+# AJUSTE MOUSE VIM
+func_set_vim() {
+local message="AJUSTANDO MOUSE NO VIM"
+sed -i 's/^"\s*\(set mouse=a\)/\1/' /etc/vim/vimrc
+func_message
+$esperar
 }
 
 # DESATIVA SSH PERMITROOTLOGIN
