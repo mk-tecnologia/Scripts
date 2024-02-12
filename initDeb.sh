@@ -213,6 +213,7 @@ func_set_domain() {
 
 # EXECUTA FUNÇÕES
 func_install_pkg
+func_set_vim
 func_disable_ssh
 func_add_ssh_key
 func_set_neofetch
