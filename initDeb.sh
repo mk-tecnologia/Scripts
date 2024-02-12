@@ -21,6 +21,48 @@ if [[ $EUID -ne 0 ]]; then
     exit 1
 fi
 
+# EXIBIR HOSTNAME E ENDEREÇO IP
+PC=$(hostname)
+IP=$(hostname -I | awk '{print $1}')
+
+# VERIFICA SE É O DEBIAN
+is_debian() {
+    # OBTÉM A ID DA DISTRIBUIÇÃO
+    deb_id=$(cat /etc/os-release | grep "^ID=" | cut -d '=' -f 2)
+    $esperar
+}
+
+# VERIFICAR SE É O DEBIAN 12
+is_debian_12() {
+    # OBTÉM A VERSÃO DO SISTEMA ATUAL
+    deb_version=$(cat /etc/os-release | grep VERSION_ID | cut -d '"' -f 2)
+}
+
+func_is_debian() {
+      is_debian
+      if [ "$deb_id" == "debian" ]; then
+        local message="S.O. DETECTADO GNU/DEBIAN"
+        func_message
+        $esperar
+        is_debian_12
+        if [ "$deb_version" == "12" ]; then
+          local message="S.O. GNU/DEBIAN VERSÃO 12"
+          func_message
+          $esperar
+        else
+          echo -ne "S.O. NÃO É GNU/DEBIAN 12.........................."
+          echo -e "${red}RECOMENDAMOS ATUALIZAR O S.O.!${nc}"
+          $esperar
+        fi
+      else
+        echo -ne "${purple}S.O. DETECTADO NÃO É GNU/DEBIAN...........................................${NC}"
+        echo -e "${red}SAINDO${nc}"
+        $esperar
+        exit 1
+      fi
+}
+
+# EXIBIR MENSAGEM AO USUARIO
 func_message() {
 local func_message="${purple}$message${nc}"
 local message_length=${#func_message}
@@ -39,11 +81,8 @@ echo "##############################"
 echo "## SCRIPT CONFIG GNU/DEBIAN ##"
 echo "##############################"
 echo ""
-echo -e "${purple}## INICIANDO CONFIG DO GNU/DEBIAN ##${nc}"
-echo ""
-
-
-echo -ne "${purple}INICIANDO CONFIGURAÇÕES DO SISTEMA...${nc}"
+func_is_debian
+echo -e "${green}## INICIANDO CONFIG DO GNU/DEBIAN ##${nc}"
 echo ""
 $esperar
 
@@ -176,7 +215,9 @@ func_get_domain
 func_set_domain
 
 # MENSAGEM DE CONCLUSÃO
-echo -ne "${green}CONFIGURAÇÕES CONCLUÍDAS...${nc}"
+echo -e "${green}CONFIGURAÇÕES CONCLUÍDAS...${nc}"
+echo -e "${purple}HOSTNAME PC: ${nc} ${green}${PC}.${dominio}${nc}"
+echo -e "${purple}IP PC: ${nc} ${green}${IP}${nc}"
 echo -e "${red}REINICIANDO${nc}"
 $reiniciar
 init 6
